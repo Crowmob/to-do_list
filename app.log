@@ -1,0 +1,26 @@
+2026-02-19T14:21:53.130Z [INFO]: Tasks endpoint accessed
+2026-02-19T14:22:09.080Z [INFO]: Tasks endpoint accessed
+2026-02-19T14:48:06.414Z [ERROR]: Invalid task ID
+2026-02-19T14:50:23.304Z [INFO]: Task created with name: fdsfd
+2026-02-19T14:51:39.574Z [ERROR]: Invalid task name
+2026-02-19T14:52:00.930Z [ERROR]: Invalid task ID
+2026-02-19T14:52:04.040Z [INFO]: Task deleted with ID:   5
+2026-02-19T14:52:19.041Z [ERROR]: Invalid task ID
+2026-02-19T14:52:23.827Z [ERROR]: Invalid task ID
+2026-02-19T14:52:31.831Z [INFO]: Tasks endpoint accessed
+2026-02-19T14:56:54.140Z [INFO]: Task created with name: task, isCompleted: true
+2026-02-19T15:20:16.496Z [ERROR]: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2026-02-19T15:21:00.772Z [ERROR]: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2026-02-19T15:21:16.012Z [ERROR]: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2026-02-19T15:22:09.564Z [INFO]: Task created with name: hello, priority: 5
+2026-02-19T15:22:16.541Z [ERROR]: "priority" must be less than or equal to 5
+2026-02-19T15:22:54.997Z [ERROR]: "priority" must be less than or equal to 5
+2026-02-19T15:23:01.669Z [ERROR]: Cannot set properties of undefined (setting 'status')
+2026-02-19T15:23:57.541Z [INFO]: Task created with name: hello, priority: 3
+2026-02-19T15:24:01.513Z [ERROR]: "name" must be a string
+2026-02-19T15:24:06.260Z [INFO]: Task created with name: hello, priority: 3
+2026-02-19T15:25:20.406Z [ERROR]: "priority" is required
+2026-02-19T15:25:38.766Z [ERROR]: "priority" is required
+2026-02-19T15:30:28.035Z [ERROR]: "id" must be a number
+2026-02-19T15:30:45.268Z [ERROR]: "id" must be a number
+2026-02-19T15:30:50.543Z [INFO]: Task with ID: 6 accessed
