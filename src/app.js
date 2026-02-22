@@ -1,6 +1,7 @@
-const express = require('express');
-const tasksRouter = require('./routers/tasks');
-const errorHadler = require('./middlewares/errorHandler');
+import express from 'express';
+import tasksRouter from './routes/tasks';
+import { errorHandler } from './middlewares/errorHandler';
+
 const app = express();
 
 app.use(express.json());
@@ -13,4 +14,4 @@ app.get('/', (req, res) => {
 
 app.use(errorHadler);
 
-module.exports = app;
+export default app;

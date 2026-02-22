@@ -1,7 +1,8 @@
-const express = require('express');
-const logger = require('../utils/logger');
-const { taskSchema, taskIdSchema } = require('../validators/taskValidator');
-const { validateBody, validateParams } = require('../validators/validate');
+import express from 'express';
+import { logger } from '../utils/logger';
+import { taskSchema, taskIdSchema } from '../validators/taskValidator';
+import { validateBody, validateParams } from '../middlewares/validationMiddleware';
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -33,4 +34,4 @@ router.delete('/:id', validateParams(taskIdSchema), (req, res) => {
     res.send(`Task deleted with ID: ${id}`);
 })
 
-module.exports = router;
+export default router;
