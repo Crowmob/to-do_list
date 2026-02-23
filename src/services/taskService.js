@@ -1,53 +1,54 @@
-import express from 'express';
+import { ConflictError, DatabaseError, NotFoundError } from '../errors/appErrors.js';
 import taskRepository from '../repositories/taskRepository.js';
 import logger from '../utils/logger.js';
 
 const getAllTasks = async () => {
-    try {
-        const tasks = await taskRepository.getAllTasks();
-        return tasks;
-    } catch (error) {
-        throw error;
-    }
-}
+    const tasks = await taskRepository.getAllTasks();
+    logger.info(`Retrieved ${tasks.length} tasks`);
+    return tasks;
+};
 
 const getTaskById = async (id) => {
-    try {
-        const task = await taskRepository.getTaskById(id);
-        logger.info(`Task with ID: ${id} accessed`);
-        return task;
-    } catch (error) {
-        throw error;
+    const task = await taskRepository.getTaskById(id);
+    if (!task) {
+        throw new NotFoundError(`Task with ID: ${id} not found`);
     }
-}
+
+    logger.info(`Task with ID: ${id} accessed`);
+    return task;
+};
 
 const createTask = async (taskData) => {
-    try {
-        const task = await taskRepository.createTask(taskData);
-        logger.info(`Task created with name: ${task.name}`);
-        return task;
-    } catch (error) {
-        throw error;
+    const task = await taskRepository.createTask(taskData);
+  
+    if (!task) {
+        throw new ConflictError("Failed to create task");
     }
-}
+  
+    logger.info(`Task created with name: ${task.name}`);
+    return task;
+};
 
 const updateTask = async (id, taskData) => {
-    try {
-        const task = await taskRepository.updateTask(id, taskData);
-        logger.info(`Task updated with ID: ${id}`);
-        return task;
-    } catch (error) {
-        throw error;
-    }
-}
+    await getTaskById(id); 
+
+    const updatedTask = await taskRepository.updateTask(id, taskData);
+
+    logger.info(`Task updated with ID: ${id}`);
+    return updatedTask;
+};
 
 const deleteTask = async (id) => {
-    try {
-        const task = await taskRepository.deleteTask(id);
-        logger.info(`Task deleted with ID: ${id}`);
-    } catch (error) {
-        throw error;
-    }
-}
+    await getTaskById(id);
+  
+    await taskRepository.deleteTask(id);
+    logger.info(`Task deleted with ID: ${id}`);
+};
 
-export default { getAllTasks, createTask, getTaskById, updateTask, deleteTask }
+export default {
+  getAllTasks,
+  createTask,
+  getTaskById,
+  updateTask,
+  deleteTask
+};

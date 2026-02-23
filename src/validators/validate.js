@@ -1,21 +1,33 @@
 export const validateBody = (schema) => {
-    return (req, res, next) => {
-        const { error } = schema.validate(req.body);
-        if (error) {
-            error.status = 400;
-            return next(error);
-        }
-        next();
+  return (req, res, next) => {
+    const { error, value } = schema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (error) {
+      error.status = 400;
+      return next(error);
     }
-}
+
+    req.body = value;
+    next();
+  };
+};
 
 export const validateParams = (schema) => {
-    return (req, res, next) => {
-        const { error } = schema.validate(req.params);
-        if (error) {
-            error.status = 400;
-            return next(error);
-        }
-        next();
+  return (req, res, next) => {
+    const { error, value } = schema.validate(req.params, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (error) {
+      error.status = 400;
+      return next(error);
     }
-}
+
+    req.params = value;
+    next();
+  };
+};
