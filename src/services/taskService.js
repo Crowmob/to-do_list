@@ -3,46 +3,67 @@ import taskRepository from '../repositories/taskRepository.js';
 import logger from '../utils/logger.js';
 
 const getAllTasks = async () => {
-    const tasks = await taskRepository.getAllTasks();
-    logger.info(`Retrieved ${tasks.length} tasks`);
-    return tasks;
+    try {
+        const tasks = await taskRepository.getAllTasks();
+        logger.info(`Retrieved ${tasks.length} tasks`);
+        return tasks;
+    } catch (err) {
+        throw new DatabaseError("Failed to fetch tasks", err);
+    }
 };
 
 const getTaskById = async (id) => {
-    const task = await taskRepository.getTaskById(id);
-    if (!task) {
-        throw new NotFoundError(`Task with ID: ${id} not found`);
+    try {
+        const task = await taskRepository.getTaskById(id);
+        if (!task) {
+            throw new NotFoundError(`Task with ID: ${id} not found`);
+        }    
+        logger.info(`Task with ID: ${id} accessed`);
+        return task;
+    } catch (err) {
+        if (err instanceof NotFoundError) throw err;
+        throw new DatabaseError("Failed to fetch task", err);
     }
-
-    logger.info(`Task with ID: ${id} accessed`);
-    return task;
 };
 
 const createTask = async (taskData) => {
-    const task = await taskRepository.createTask(taskData);
-  
-    if (!task) {
-        throw new ConflictError("Failed to create task");
+    try {
+        const task = await taskRepository.createTask(taskData);
+    
+        if (!task) {
+            throw new ConflictError("Failed to create task");
+        }
+    
+        logger.info(`Task created with name: ${task.name}`);
+        return task;
+    } catch (err) {
+        if (err instanceof ConflictError) throw err;
+        throw new DatabaseError("Failed to create task", err);
     }
-  
-    logger.info(`Task created with name: ${task.name}`);
-    return task;
 };
 
 const updateTask = async (id, taskData) => {
-    await getTaskById(id); 
-
-    const updatedTask = await taskRepository.updateTask(id, taskData);
-
-    logger.info(`Task updated with ID: ${id}`);
-    return updatedTask;
+    try {
+        await getTaskById(id); 
+        const updatedTask = await taskRepository.updateTask(id, taskData);
+        logger.info(`Task updated with ID: ${id}`);
+        return updatedTask;
+    } catch (err) {
+        if (err instanceof NotFoundError) throw err;
+        throw new DatabaseError("Failed to update task", err);
+    }
 };
 
 const deleteTask = async (id) => {
-    await getTaskById(id);
-  
-    await taskRepository.deleteTask(id);
-    logger.info(`Task deleted with ID: ${id}`);
+    try {
+        await getTaskById(id);
+    
+        await taskRepository.deleteTask(id);
+        logger.info(`Task deleted with ID: ${id}`);
+    } catch (err) {
+        if (err instanceof NotFoundError) throw err;
+        throw new DatabaseError("Failed to delete task", err);
+    }
 };
 
 export default {

@@ -13,3 +13,21 @@ model Task {
   priority    Int                                                                               
   createdAt   DateTime @default(now())                             
 }
+
+model User {
+  id          Int @id @default(autoincrement())
+  username    String @unique
+  password    String
+  createdAt   DateTime @default(now())
+  sessions    Session[]
+}
+
+model Session {
+  id            Int @id @default(autoincrement())
+  user          User @relation(fields: [userId], references: [id])
+  userId        Int
+  createdAt     DateTime
+  expireTime    Int @default(30)
+  refreshTime   Int @default(1440)
+  expiredAt     DateTime @default(now())
+}
