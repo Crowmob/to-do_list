@@ -1,4 +1,4 @@
-import prisma from "../prismaClient.js";
+import prisma from "../../prismaClient.js";
 
 const createUser = async (userData) => {
     return await prisma.user.create({
@@ -12,7 +12,14 @@ const getUserById = async (userId) => {
     })
 }
 
+const getUserByUsername = async (username) => {
+    return await prisma.user.findUnique({
+        where: { username }
+    })
+}
+
 export default {
     createUser,
-    getUserById
+    getUserById,
+    getUserByUsername
 }

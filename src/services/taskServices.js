@@ -1,10 +1,10 @@
 import { ConflictError, DatabaseError, NotFoundError } from '../errors/appErrors.js';
-import taskRepository from '../repositories/taskRepository.js';
+import taskRepository from '../repositories/postgres/taskRepository.js';
 import logger from '../utils/logger.js';
 
-const getAllTasks = async () => {
+const getAllTasks = async (userId) => {
     try {
-        const tasks = await taskRepository.getAllTasks();
+        const tasks = await taskRepository.getAllTasks(userId);
         logger.info(`Retrieved ${tasks.length} tasks`);
         return tasks;
     } catch (err) {
@@ -12,12 +12,12 @@ const getAllTasks = async () => {
     }
 };
 
-const getTaskById = async (id) => {
+const getTaskById = async (id, userId) => {
     try {
-        const task = await taskRepository.getTaskById(id);
+        const task = await taskRepository.getTaskById(id, userId);
         if (!task) {
             throw new NotFoundError(`Task with ID: ${id} not found`);
-        }    
+        }
         logger.info(`Task with ID: ${id} accessed`);
         return task;
     } catch (err) {
@@ -42,10 +42,10 @@ const createTask = async (taskData) => {
     }
 };
 
-const updateTask = async (id, taskData) => {
+const updateTask = async (id, taskData, userId) => {
     try {
-        await getTaskById(id); 
-        const updatedTask = await taskRepository.updateTask(id, taskData);
+        await getTaskById(id, userId);
+        const updatedTask = await taskRepository.updateTask(id, taskData, userId);
         logger.info(`Task updated with ID: ${id}`);
         return updatedTask;
     } catch (err) {
@@ -54,11 +54,11 @@ const updateTask = async (id, taskData) => {
     }
 };
 
-const deleteTask = async (id) => {
+const deleteTask = async (id, userId) => {
     try {
-        await getTaskById(id);
+        await getTaskById(id, userId);
     
-        await taskRepository.deleteTask(id);
+        await taskRepository.deleteTask(id, userId);
         logger.info(`Task deleted with ID: ${id}`);
     } catch (err) {
         if (err instanceof NotFoundError) throw err;

@@ -11,7 +11,9 @@ model Task {
   id          Int      @id @default(autoincrement()) 
   name        String
   priority    Int                                                                               
-  createdAt   DateTime @default(now())                             
+  createdAt   DateTime @default(now())    
+  user        User @relation(fields: [userId], references: [id])
+  userId      Int                         
 }
 
 model User {
@@ -20,6 +22,7 @@ model User {
   password    String
   createdAt   DateTime @default(now())
   sessions    Session[]
+  tasks       Task[]
 }
 
 model Session {
@@ -27,7 +30,7 @@ model Session {
   user          User @relation(fields: [userId], references: [id])
   userId        Int
   createdAt     DateTime
-  expireTime    Int @default(30)
-  refreshTime   Int @default(1440)
+  expireTime    Int @default(3600)
+  refreshTime   Int @default(86400)
   expiredAt     DateTime @default(now())
 }

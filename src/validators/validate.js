@@ -6,7 +6,7 @@ export const validateBody = (schema) => {
     });
 
     if (error) {
-      error.status = 400;
+      error.statusCode = 400;
       return next(error);
     }
 
@@ -23,7 +23,7 @@ export const validateParams = (schema) => {
     });
 
     if (error) {
-      error.status = 400;
+      error.statusCode = 400;
       return next(error);
     }
 

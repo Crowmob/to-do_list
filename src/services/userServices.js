@@ -1,9 +1,9 @@
 import logger from "../utils/logger.js";
-import userRepository from "../repositories/userRepository.js";
+import userRepository from "../repositories/postgres/userRepository.js";
 import { ConflictError, DatabaseError, NotFoundError } from "../errors/appErrors.js";
 import { Prisma } from "@prisma/client";
 
-export const getUserById = async (userId) => {
+const getUserById = async (userId) => {
     try {
         const userData = await userRepository.getUserById(userId);
         if (!userData) {
@@ -17,7 +17,21 @@ export const getUserById = async (userId) => {
     }
 };
 
-export const createUser = async (userData) => {
+const getUserByUsername = async (username) => {
+    try {
+        const userData = await userRepository.getUserByUsername(username);
+        if (!userData) {
+            throw new NotFoundError(`User with username: ${username} not found`);
+        }
+        logger.info(`User with username: ${username} accessed`);
+        return userData;
+    } catch (err) {
+        if (err instanceof NotFoundError) throw err;
+        throw new DatabaseError("Failed to fetch user", err);
+    }
+};
+
+const createUser = async (userData) => {
     try {
         const user = await userRepository.createUser(userData);
         logger.info(`User created with id: ${user.id}`);
@@ -32,5 +46,6 @@ export const createUser = async (userData) => {
 
 export default {
     createUser,
-    getUserById
+    getUserById,
+    getUserByUsername
 }

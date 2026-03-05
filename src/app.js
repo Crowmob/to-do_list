@@ -1,12 +1,14 @@
 import express from 'express';
 import tasksRouter from './routes/taskRoutes.js';
 import authRouter from './routes/authRoutes.js';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use('/tasks', tasksRouter);
 app.use('/', authRouter)
