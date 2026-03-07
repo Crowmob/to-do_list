@@ -1,0 +1,10 @@
+backend/app.log
+backend/.dockerignore
+backend/.env
+backend/node_modules
+
+frontend/.env
+frontend/.dockerignore
+frontend/node_modules
+
+
