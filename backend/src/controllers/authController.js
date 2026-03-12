@@ -22,14 +22,15 @@ const authUser = async (req, res, userId) => {
         sameSite: "lax",
         maxAge: 3600000,
     });
+    return token;
 }
 
 const login = async (req, res) => {
     try {
         const user = await userServices.getUserByUsername(req.body.username);
-        if (comparePassword(req.body.password, user.password)) {
-            await authUser(req, res, user.id);
-            res.status(200).send('Login successful');
+        if (await comparePassword(req.body.password, user["password"])) {
+            const token = await authUser(req, res, user.id);
+            res.status(200).json({ message: 'Login successful', token });
         } else {
             res.status(401).json({ error: "Invalid credentials" });
         }
@@ -42,8 +43,19 @@ const register = async (req, res) => {
     try {
         const hashedPassword = await hashPassword(req.body.password);
         const user = await userServices.createUser({ username: req.body.username, password: hashedPassword });
-        await authUser(req, res, user.id);
-        res.status(201).send('User registered successfully');
+        const token = await authUser(req, res, user.id);
+        res.status(201).json({ message: 'User registered successfully', token });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ error: err.message })
+    }
+}
+
+const getMe = async (req, res) => {
+    try {
+        let token = req.cookies.accessToken;
+        const data = await verifyToken(token);
+        token = await authUser(req, res, data.userId);
+        res.status(200).json({ token: token });
     } catch (err) {
         res.status(err.statusCode || 500).json({ error: err.message })
     }
@@ -57,7 +69,7 @@ const logout = async (req, res) => {
         await sessionServices.createSessionInPostrgres(data.userId, sessionData.createdAt, sessionData.expiredAt);
         await sessionServices.deleteSession(data.userId);
         res.clearCookie("accessToken");
-        res.status(200).send('Logout successful');
+        res.status(200).json({ message: 'Logout successful' });
     } catch (err) {
         res.status(err.statusCode || 500).json({ error: err.message })
     }
@@ -66,5 +78,6 @@ const logout = async (req, res) => {
 export default {
     login,
     register,
+    getMe,
     logout
 }

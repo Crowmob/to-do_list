@@ -1,17 +1,38 @@
+import { useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { Route, Routes, useNavigate } from "react-router-dom"
+
 import Header from "./components/Header"
-import Body from "./components/Body"
-import { Route, Routes } from "react-router-dom"
-import LoginForm from "./components/LoginForm"
-import RegisterForm from "./components/RegisterForm"
+import HomePage from "./pages/HomePage"
+import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
+import { useGetMeQuery } from "./api/apiAuth"
+import type { AppDispatch } from "./store/store"
+import { setAuthChecked, setToken } from "./store/slices/authSlice"
+import LogoutPage from "./pages/LogoutPage"
+import { Routes as AppRoutes } from "./constants/constants.ts"
 
 const App = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { data: token, error, isLoading } = useGetMeQuery();
+
+  useEffect(() => {
+    if (token && !isLoading && !error) {
+      dispatch(setToken(token));
+    } else if (!isLoading && error) {
+      dispatch(setAuthChecked());
+    }
+  }, [token, error, isLoading, dispatch, navigate]);
+
   return (
     <>
       <Header />
       <Routes>
-         <Route path="/" element={<Body />} />
-         <Route path="/login" element={<LoginForm />} />
-         <Route path="/register" element={<RegisterForm />} />
+         <Route path={AppRoutes.HOME} element={<HomePage />} />
+         <Route path={AppRoutes.LOGIN} element={<LoginPage />} />
+         <Route path={AppRoutes.REGISTER} element={<RegisterPage />} />
+         <Route path={AppRoutes.LOGOUT} element={<LogoutPage />} />  
       </Routes>
     </>
   )

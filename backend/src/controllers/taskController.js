@@ -50,7 +50,7 @@ const deleteTask = async (req, res) => {
         const id = Number(req.params.id);
         const data = await verifyToken(req.cookies["accessToken"]);
         await taskService.deleteTask(id, data.userId);
-        res.status(204).send(`Task deleted with ID: ${id}`);
+        res.status(204).json({ message: `Task deleted with ID: ${id}` });
     } catch (error) {
         res.status(error.statusCode || 500).json({ error: error.message });
     }

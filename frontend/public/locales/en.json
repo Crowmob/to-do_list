@@ -3,5 +3,8 @@
     "register": "register",
     "registration": "registration",
     "username": "username",
-    "password": "password"
+    "password": "password",
+    "logout": "logout",
+    "loading": "Loading",
+    "pleaseLogIn": "Please log in to see your tasks."
 }

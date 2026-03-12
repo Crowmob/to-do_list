@@ -1,17 +1,52 @@
+import { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type { SerializedError } from "@reduxjs/toolkit";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-const LoginForm = () => {
+import { useRegisterMutation } from "../api/apiAuth";
+import type { AppDispatch } from "../store/store";
+import { setToken } from "../store/slices/authSlice";
+import { Routes } from "../constants/constants";
+
+const RegisterPage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [register, { isLoading }] = useRegisterMutation();
+
+    const handleRegister = async () => {
+        try {
+            const data = await register({ username, password }).unwrap();
+            dispatch(setToken(data.token));
+            navigate(Routes.HOME);
+            window.location.reload();
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError;
+
+            if ("status" in error ) {
+                if (error.status === 409) {
+                    const data = error.data as { error: string };
+                    setErrorMessage(data.error);
+                }
+            }
+        }
+    };
 
     return (
         <Box sx={{ display: "flex", justifyContent: "center", pt: 5 }}>
             <Box sx={{ backgroundColor: "#D4AF9F", width: "400px", borderRadius: "10px" }}>
                 <Typography variant="h5" component="div" sx={{ p: 2, textAlign: "center", color: "white" }}>
-                    {t("login").toUpperCase()}
+                    {t("registration").toUpperCase()}
                 </Typography>
                 <TextField
                     variant="outlined"
+                    onChange={(e) => {setUsername(e.target.value)}}
                     placeholder={t("username").toUpperCase()}
                     sx={{
                         input: {
@@ -40,6 +75,7 @@ const LoginForm = () => {
                 />
                 <TextField
                     variant="outlined"
+                    onChange={(e) => {setPassword(e.target.value)}}
                     placeholder={t("password").toUpperCase()}
                     sx={{
                         input: {
@@ -65,14 +101,19 @@ const LoginForm = () => {
                         width: "90%"
                     }}
                 />
-                <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                    <Button variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }}>
-                        { t("login") }
-                    </Button>
-                </Box>
+                <Typography variant="body2" color="error" sx={{ p: 1, textAlign: "center" }}>
+                    {errorMessage}
+                </Typography>
+                {!isLoading && (
+                    <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+                        <Button variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleRegister}>
+                            { t("register") }
+                        </Button>
+                    </Box>
+                )}
             </Box>
         </Box>
     )
 }
 
-export default LoginForm;
+export default RegisterPage;

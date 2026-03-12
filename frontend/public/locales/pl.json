@@ -3,5 +3,8 @@
     "register": "zarejestruj się",
     "registration": "rejestracja",
     "username": "nazwa użytkownika",
-    "password": "hasło"
+    "password": "hasło",
+    "logout": "wyloguj się",
+    "loading": "Ładowanie",
+    "pleaseLogIn": "Zaloguj się, aby zobaczyć swoje zadania."
 }

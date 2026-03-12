@@ -4,7 +4,7 @@ import { UnauthorizedError } from "../errors/appErrors.js";
 
 const authHandler = async (req, res, next) => {
     try {
-        const token = req.cookies.accessToken;
+        const token = req.cookies["accessToken"];
         const data = await verifyToken(token);
         const session = await sessionServices.getCurrentSession(data.userId);
         if (session.fingerprint !== `${req.headers['user-agent']}|${req.ip}|${req.headers['accept-language']}`) {
@@ -17,7 +17,7 @@ const authHandler = async (req, res, next) => {
             sameSite: "lax",
             maxAge: 3600000,
         });
-        next();
+        next()
     } catch (err) {
         if (err instanceof UnauthorizedError) {
             const token = req.cookies.accessToken;
