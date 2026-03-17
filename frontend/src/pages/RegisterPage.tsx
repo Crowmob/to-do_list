@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { useRegisterMutation } from "../api/apiAuth";
 import type { AppDispatch } from "../store/store";
 import { setToken } from "../store/slices/authSlice";
-import { Routes } from "../constants/constants";
+import { RegexPatterns, Routes } from "../constants/constants";
 
 const RegisterPage = () => {
     const { t } = useTranslation();
@@ -21,6 +21,21 @@ const RegisterPage = () => {
     const [register, { isLoading }] = useRegisterMutation();
 
     const handleRegister = async () => {
+        if (!username || !password) {
+            setErrorMessage(t("fillAllFields"));
+            return;
+        }
+        if (!RegexPatterns.USERNAME.test(username)) {
+            setErrorMessage(t("invalidUsername"));
+            return;
+        }
+        if (!RegexPatterns.PASSWORD.test(password)) {
+            setErrorMessage(t("invalidPassword"));
+            return;
+        }
+        else {
+            setErrorMessage("");
+        }
         try {
             const data = await register({ username, password }).unwrap();
             dispatch(setToken(data.token));
@@ -101,16 +116,16 @@ const RegisterPage = () => {
                         width: "90%"
                     }}
                 />
+
                 <Typography variant="body2" color="error" sx={{ p: 1, textAlign: "center" }}>
                     {errorMessage}
                 </Typography>
-                {!isLoading && (
-                    <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                        <Button variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleRegister}>
-                            { t("register") }
-                        </Button>
-                    </Box>
-                )}
+
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+                    <Button disabled={isLoading} variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleRegister}>
+                        {t("register")}
+                    </Button>
+                </Box>
             </Box>
         </Box>
     )

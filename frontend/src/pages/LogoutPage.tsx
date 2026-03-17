@@ -14,7 +14,7 @@ const LogoutPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const [logout] = useLogoutMutation();
+    const [logout, { isLoading }] = useLogoutMutation();
 
     const handleLogout = async () => {
         dispatch(clearToken());
@@ -31,7 +31,7 @@ const LogoutPage = () => {
                 </Typography>
 
                 <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                    <Button variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleLogout}>
+                    <Button disabled={isLoading} variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleLogout}>
                         { t("logout") }
                     </Button>
                 </Box>

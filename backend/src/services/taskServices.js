@@ -42,7 +42,7 @@ const createTask = async (taskData) => {
     }
 };
 
-const updateTask = async (id, taskData, userId) => {
+const updateTask = async (id, taskData, userId, completed) => {
     try {
         await getTaskById(id, userId);
         const updatedTask = await taskRepository.updateTask(id, taskData, userId);

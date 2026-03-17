@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 
 import type { AppDispatch } from "../store/store";
 import { setToken } from "../store/slices/authSlice";
-import { Routes } from "../constants/constants";
+import { RegexPatterns, Routes } from "../constants/constants";
 
 const LoginPage = () => {
     const { t } = useTranslation();
@@ -21,6 +21,21 @@ const LoginPage = () => {
     const [login, { isLoading }] = useLoginMutation();
 
     const handleLogin = async () => {
+        if (!username || !password) {
+            setErrorMessage(t("fillAllFields"));
+            return;
+        }
+        if (!RegexPatterns.USERNAME.test(username)) {
+            setErrorMessage(t("invalidUsername"));
+            return;
+        }
+        if (!RegexPatterns.PASSWORD.test(password)) {
+            setErrorMessage(t("invalidPassword"));
+            return;
+        }
+        else {
+            setErrorMessage("");
+        }
         try {
             const data = await login({ username, password }).unwrap();
             dispatch(setToken(data.token));
@@ -31,8 +46,7 @@ const LoginPage = () => {
 
             if ("status" in error ) {
                 if (error.status === 401 || error.status === 404) {
-                    const data = error.data as { error: string };
-                    setErrorMessage(data.error);
+                    setErrorMessage(t("invalidCredentials"));
                 }
             }
         }
@@ -101,16 +115,16 @@ const LoginPage = () => {
                         width: "90%"
                     }}
                 />
+                
                 <Typography variant="body2" color="error" sx={{ p: 1, textAlign: "center" }}>
                     {errorMessage}
                 </Typography>
-                {!isLoading && (
-                    <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                        <Button variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={() => handleLogin()}>
-                            { t("login") }
-                        </Button>
-                    </Box>
-                )}
+
+                <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+                    <Button disabled={isLoading} variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={() => handleLogin()}>
+                        { t("login") }
+                    </Button>
+                </Box>
             </Box>
         </Box>
     )

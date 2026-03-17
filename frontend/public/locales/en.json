@@ -6,5 +6,13 @@
     "password": "password",
     "logout": "logout",
     "loading": "Loading",
-    "pleaseLogIn": "Please log in to see your tasks."
+    "pleaseLogIn": "Please log in to see your tasks.",
+    "invalidCredentials": "Invalid credentials.",
+    "fillAllFields": "Please fill in all fields.",
+    "invalidUsername": "Username must be between 3 and 20 characters.",
+    "invalidPassword": "Password must contain 8+ chars, uppercase, lowercase, number and special character",
+    "noTasks": "No tasks found. Add some!",
+    "addTask": "Add Task",
+    "taskNameRequired": "Task name is required.",
+    "edit": "edit"
 }

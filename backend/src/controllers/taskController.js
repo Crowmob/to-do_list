@@ -38,7 +38,7 @@ const updateTask = async (req, res) => {
     try {
         const id = Number(req.params.id);
         const data = await verifyToken(req.cookies["accessToken"]);
-        const task = await taskService.updateTask(id, { name: req.body.name, priority: req.body.priority }, data.userId);
+        const task = await taskService.updateTask(id, { name: req.body.name, priority: req.body.priority, completed: req.body.completed }, data.userId);
         res.json(task);
     } catch (error) {
         res.status(error.statusCode || 500).json({ error: error.message });

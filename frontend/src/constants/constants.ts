@@ -17,3 +17,20 @@ export const ApiEndpoints = {
     LOGOUT: "logout",
     TASKS: "tasks"
 }
+
+export const RegexPatterns = {
+    USERNAME: /^.{3,20}$/,
+    PASSWORD: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
+}
+
+export const APIMethods = {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+}
+
+export const TagTypes = {
+    TASKS: "Tasks",
+    AUTH: "Auth"
+}

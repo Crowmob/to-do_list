@@ -1,18 +1,37 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Task } from "../types/task";
-import { ApiEndpoints } from "../constants/constants";
+import { baseApi } from "./baseApi";
+import type { TaskActionRequest, Task } from "../types/task";
+import { ApiEndpoints, APIMethods, TagTypes } from "../constants/constants";
 
-export const apiTasks = createApi({
-    reducerPath: "apiTasks",
-    baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5000/",
-        credentials: "include",
+export const apiTasks = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getTasks: builder.query<Task[], void>({
+      query: () => ApiEndpoints.TASKS,
+      providesTags: [TagTypes.TASKS]
     }),
-    endpoints: (builder) => ({
-        getTasks: builder.query<Task[], void>({
-            query: () => ApiEndpoints.TASKS,
-        }),
+    createTask: builder.mutation<void, TaskActionRequest>({
+      query: (newTask) => ({
+        url: ApiEndpoints.TASKS,
+        method: APIMethods.POST,
+        body: newTask,
+      }),
+      invalidatesTags: [TagTypes.TASKS]
     }),
+    updateTask: builder.mutation<void, TaskActionRequest & { taskId: number }>({
+      query: ({ name, priority, completed, taskId }) => ({
+        url: `${ApiEndpoints.TASKS}/${taskId}`,
+        method: APIMethods.PUT,
+        body: { name, priority, completed },
+      }),
+      invalidatesTags: [TagTypes.TASKS]
+    }),
+    deleteTask: builder.mutation<void, { taskId: number }>({
+      query: ({ taskId }) => ({
+        url: `${ApiEndpoints.TASKS}/${taskId}`,
+        method: APIMethods.DELETE,
+      }),
+      invalidatesTags: [TagTypes.TASKS]
+    }),
+  }),
 });
 
-export const { useGetTasksQuery } = apiTasks;
+export const { useGetTasksQuery, useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } = apiTasks;

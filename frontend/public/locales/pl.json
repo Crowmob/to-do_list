@@ -6,5 +6,13 @@
     "password": "hasło",
     "logout": "wyloguj się",
     "loading": "Ładowanie",
-    "pleaseLogIn": "Zaloguj się, aby zobaczyć swoje zadania."
+    "pleaseLogIn": "Zaloguj się, aby zobaczyć swoje zadania.",
+    "invalidCredentials": "Nieprawidłowe dane logowania.",
+    "fillAllFields": "Wypełnij wszystkie pola.",
+    "invalidUsername": "Nazwa użytkownika musi mieć od 3 do 20 znaków.",
+    "invalidPassword": "Hasło musi zawierać co najmniej 8 znaków, wielką literę, małą literę, cyfrę i znak specjalny.",
+    "noTasks": "Brak zadań do wyświetlenia. Dodaj nowe zadanie, aby zacząć!",
+    "addTask": "Dodaj zadanie",
+    "taskNameRequired": "Nazwa zadania jest wymagana.",
+    "edit": "redagować"
 }

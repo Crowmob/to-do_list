@@ -1,42 +1,41 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseApi } from "./baseApi";
 import type { AuthRequest, AuthResponse } from "../types/auth";
-import { ApiEndpoints } from "../constants/constants";
+import { ApiEndpoints, APIMethods } from "../constants/constants";
 
-export const apiAuth = createApi({
-  reducerPath: "apiAuth",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/",
-    credentials: "include",
-  }),
-  tagTypes: [],
+export const apiAuth = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, AuthRequest>({
       query: ({ username, password }) => ({
         url: ApiEndpoints.LOGIN,
-        method: "POST",
+        method: APIMethods.POST,
         body: { username, password },
       }),
     }),
     register: builder.mutation<AuthResponse, AuthRequest>({
       query: ({ username, password }) => ({
         url: ApiEndpoints.REGISTER,
-        method: "POST",
+        method: APIMethods.POST,
         body: { username, password },
       }),
     }),
     getMe: builder.query<string, void>({
       query: () => ({
         url: ApiEndpoints.ME,
-        method: "GET",
+        method: APIMethods.GET,
       }),
     }),
-    logout: builder.mutation<undefined, void>({
+    logout: builder.mutation<void, void>({
       query: () => ({
         url: ApiEndpoints.LOGOUT,
-        method: "POST",
+        method: APIMethods.POST,
       }),
     }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetMeQuery, useLogoutMutation } = apiAuth;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetMeQuery,
+  useLogoutMutation,
+} = apiAuth;
