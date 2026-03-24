@@ -17,10 +17,10 @@ export const apiTasks = baseApi.injectEndpoints({
       invalidatesTags: [TagTypes.TASKS]
     }),
     updateTask: builder.mutation<void, TaskActionRequest & { taskId: number }>({
-      query: ({ name, priority, completed, taskId }) => ({
+      query: ({ name, priority, completed, taskId, category }) => ({
         url: `${ApiEndpoints.TASKS}/${taskId}`,
         method: APIMethods.PUT,
-        body: { name, priority, completed },
+        body: { name, priority, completed, category },
       }),
       invalidatesTags: [TagTypes.TASKS]
     }),

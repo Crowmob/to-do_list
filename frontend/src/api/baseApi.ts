@@ -4,7 +4,7 @@ import { TagTypes } from "../constants/constants";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/",
+    baseUrl: import.meta.env.VITE_BACKEND_URL,
     credentials: "include",
   }),
   tagTypes: [TagTypes.TASKS, TagTypes.AUTH],

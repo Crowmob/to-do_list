@@ -14,5 +14,8 @@
     "noTasks": "No tasks found. Add some!",
     "addTask": "Add Task",
     "taskNameRequired": "Task name is required.",
-    "edit": "edit"
+    "edit": "edit",
+    "save": "save",
+    "discard": "discard",
+    "userAlreadyExists": "User already exists"
 }

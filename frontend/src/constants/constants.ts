@@ -34,3 +34,8 @@ export const TagTypes = {
     TASKS: "Tasks",
     AUTH: "Auth"
 }
+
+export const AuthActions = {
+    REGISTER: "register",
+    LOGIN: "login"
+}

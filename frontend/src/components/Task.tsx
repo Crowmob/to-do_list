@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Button, Divider, TextField, Typography, Checkbox } from "@mui/material";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useTranslation } from "react-i18next";
+
 import { useDeleteTaskMutation, useUpdateTaskMutation } from "../api/apiTasks";
 import type { Task } from '../types/task.ts'
 
@@ -10,11 +13,11 @@ type TaskProps = Task & {
 }
 
 const priorityColors: Record<number, string> = {
-    5: "#d32f2f",
-    4: "#f57c00",
+    1: "#d32f2f",
+    2: "#f57c00",
     3: "#fbc02d",
-    2: "#7cb342",
-    1: "#90a4ae"
+    4: "#7cb342",
+    5: "#90a4ae"
 }
 
 const TaskComponent = (task: TaskProps) => {
@@ -39,13 +42,13 @@ const TaskComponent = (task: TaskProps) => {
     }, [task.name, task.priority])
 
     const handleUpdateTask = async () => {
-        await updateTask({ name: newTaskName, priority: newTaskPriority, taskId: task.taskId, completed: task.completed })
+        await updateTask({ name: newTaskName, priority: newTaskPriority, taskId: task.taskId, completed: task.completed, category: task.category })
         setShowTaskActions(false);
         setEditMode(false);
     }
 
     const handleUpdateChecbox = async () => {
-        await updateTask({ name: newTaskName, priority: newTaskPriority, taskId: task.taskId, completed: !task.completed });
+        await updateTask({ name: newTaskName, priority: newTaskPriority, taskId: task.taskId, completed: !task.completed, category: task.category });
     }
 
     useEffect(() => {
@@ -77,6 +80,8 @@ const TaskComponent = (task: TaskProps) => {
                         <Checkbox
                             checked={task.completed}
                             onChange={handleUpdateChecbox} 
+                            icon={<RadioButtonUncheckedIcon />}
+                            checkedIcon={<CheckCircleIcon />}
                             sx={{
                                 color: "#82492E",
                                 "&.Mui-checked": { color: "#82492E" }

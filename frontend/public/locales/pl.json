@@ -14,5 +14,8 @@
     "noTasks": "Brak zadań do wyświetlenia. Dodaj nowe zadanie, aby zacząć!",
     "addTask": "Dodaj zadanie",
     "taskNameRequired": "Nazwa zadania jest wymagana.",
-    "edit": "redagować"
+    "edit": "redagować",
+    "save": "zastosować",
+    "discard": "odrzucić",
+    "userAlreadyExists": "Użytkownik już istnieje."
 }

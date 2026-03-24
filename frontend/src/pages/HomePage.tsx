@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { useMemo, useState } from "react";
+import { Box, Button, Chip, TextField, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -7,28 +7,43 @@ import { useCreateTaskMutation, useGetTasksQuery } from "../api/apiTasks";
 import type { RootState } from "../store/store";
 import TaskComponent from "../components/Task";
 
-
 const HomePage = () => {
   const { t }= useTranslation();
   const { isAuthenticated, isAuthChecked } = useSelector((state: RootState) => state.auth);
   const [taskPriority, setTaskPriority] = useState<number>(1);
   const [taskName, setTaskName] = useState<string>("");
+  const [taskCategory, setTaskCategory] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [addTask] = useCreateTaskMutation();
-  const { data: tasks, isLoading: isTasksLoading, refetch: refetchTasks } = useGetTasksQuery(undefined, { skip: !isAuthenticated });
+  const { data: tasks, isLoading: isTasksLoading } =
+    useGetTasksQuery(undefined, { skip: !isAuthenticated });
+
+  const categories = useMemo(() => {
+    return [...new Set(tasks?.map(task => task.category) || [])]
+      .sort((a, b) => a.localeCompare(b));
+  }, [tasks]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const selectedCategory = selected ?? categories[0];
+
+  const activeTasks = tasks?.filter(
+    task => !task.completed && task.category === selectedCategory
+  );
+
+  const completedTasks = tasks?.filter(
+    task => task.completed && task.category === selectedCategory
+  );
 
   const handleAddTask = async () => {
-    if (!taskName.trim()) {
-      setErrorMessage(t("taskNameRequired"));
+    if (!taskName.trim() || !taskCategory.trim()) {
+      setErrorMessage(t("fillAllFields"));
       return;
     } else { 
       setErrorMessage("");
     }
-    await addTask({ name: taskName, priority: taskPriority, completed: false });
+    await addTask({ name: taskName, priority: taskPriority, completed: false, category: taskCategory });
     setTaskName("");
     setTaskPriority(1);
-    refetchTasks();
   }
 
   if (!isAuthChecked || (isAuthenticated && isTasksLoading)) {
@@ -55,6 +70,12 @@ const HomePage = () => {
               inputProps={{ maxLength: 200 }}
             />
             <TextField
+              label={t("taskCategory")}
+              value={taskCategory}
+              onChange={(e) => setTaskCategory(e.target.value.length <= 50 ? e.target.value : taskCategory)}
+              inputProps={{ maxLength: 50 }}
+            />
+            <TextField
               label={t("taskPriority")}
               type="number"
               value = {taskPriority}
@@ -73,33 +94,79 @@ const HomePage = () => {
         </Box>
       </Box>
 
-      {tasks && tasks.length > 0 && (
-        <Box sx={{ pt: 2 }}>
-          <Box
+      <Box sx={{ display: "flex", gap: 1 }}>
+        {categories.map((category) => (
+          <Chip
+            key={category}
+            label={category}
+            clickable
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              rowGap: 1,
-              border: "3px solid gray",
-              backgroundColor: "lightgray",
-              borderRadius: 5,
-              p: 1
+              color: selectedCategory === category ? "#82492E" : "default",
             }}
-          >
-            {[...tasks]
-              .sort((a, b) => b.priority - a.priority)
-              .map((task, index) => (
-                <TaskComponent
-                  key={task.id}
-                  id={index + 1}
-                  taskId={task.id}
-                  name={task.name}
-                  priority={task.priority}
-                  completed={task.completed}
-                />
-            ))}
-          </Box>
-        </Box>
+            onClick={() => setSelected(category)}
+          />
+        ))}
+      </Box>
+
+      {tasks && tasks.length > 0 && (
+        <>
+          {activeTasks && activeTasks.length > 0 && (
+            <Box sx={{ pt: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: 1,
+                  border: "3px solid gray",
+                  borderRadius: 5,
+                  p: 1
+                }}
+              >
+                {[...activeTasks]
+                  .sort((a, b) => a.priority - b.priority)
+                  .map((task, index) => (
+                    <TaskComponent
+                      key={task.id}
+                      id={index + 1}
+                      taskId={task.id}
+                      name={task.name}
+                      priority={task.priority}
+                      completed={task.completed}
+                      category={task.category}
+                    />
+                ))}
+              </Box>
+            </Box>
+          )}
+          {completedTasks && completedTasks.length > 0 && (
+            <Box sx={{ pt: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: 1,
+                  border: "3px solid gray",
+                  borderRadius: 5,
+                  p: 1
+                }}
+              >
+                {[...completedTasks]
+                  .sort((a, b) => a.priority - b.priority)
+                  .map((task, index) => (
+                    <TaskComponent
+                      key={task.id}
+                      id={index + 1}
+                      taskId={task.id}
+                      name={task.name}
+                      priority={task.priority}
+                      completed={task.completed}
+                      category={task.category}
+                    />
+                ))}
+              </Box>
+            </Box>
+          )}
+        </>
       )}
     </>
   );

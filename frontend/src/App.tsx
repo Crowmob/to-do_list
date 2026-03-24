@@ -11,6 +11,7 @@ import type { AppDispatch } from "./store/store"
 import { setAuthChecked, setToken } from "./store/slices/authSlice"
 import LogoutPage from "./pages/LogoutPage"
 import { Routes as AppRoutes } from "./constants/constants.ts"
+import PrivateRoute from "./components/PrivateRoute.tsx"
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,9 +31,9 @@ const App = () => {
       <Header />
       <Routes>
          <Route path={AppRoutes.HOME} element={<HomePage />} />
-         <Route path={AppRoutes.LOGIN} element={<LoginPage />} />
-         <Route path={AppRoutes.REGISTER} element={<RegisterPage />} />
-         <Route path={AppRoutes.LOGOUT} element={<LogoutPage />} />  
+         <Route path={AppRoutes.LOGIN} element={<PrivateRoute authRequired={false}><LoginPage /></PrivateRoute>} />
+         <Route path={AppRoutes.REGISTER} element={<PrivateRoute authRequired={false}><RegisterPage /></PrivateRoute>} />
+         <Route path={AppRoutes.LOGOUT} element={<PrivateRoute authRequired={true}><LogoutPage /></PrivateRoute>} />  
       </Routes>
     </>
   )

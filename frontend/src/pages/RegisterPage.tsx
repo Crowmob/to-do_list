@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import type { SerializedError } from "@reduxjs/toolkit";
@@ -9,18 +9,17 @@ import { useDispatch } from "react-redux";
 import { useRegisterMutation } from "../api/apiAuth";
 import type { AppDispatch } from "../store/store";
 import { setToken } from "../store/slices/authSlice";
-import { RegexPatterns, Routes } from "../constants/constants";
+import { AuthActions, RegexPatterns, Routes } from "../constants/constants";
+import AuthForm from "../components/AuthForm";
 
 const RegisterPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [register, { isLoading }] = useRegisterMutation();
 
-    const handleRegister = async () => {
+    const handleRegister = async (username: string, password: string) => {
         if (!username || !password) {
             setErrorMessage(t("fillAllFields"));
             return;
@@ -46,8 +45,7 @@ const RegisterPage = () => {
 
             if ("status" in error ) {
                 if (error.status === 409) {
-                    const data = error.data as { error: string };
-                    setErrorMessage(data.error);
+                    setErrorMessage(t("userAlreadyExists"));
                 }
             }
         }
@@ -59,73 +57,8 @@ const RegisterPage = () => {
                 <Typography variant="h5" component="div" sx={{ p: 2, textAlign: "center", color: "white" }}>
                     {t("registration").toUpperCase()}
                 </Typography>
-                <TextField
-                    variant="outlined"
-                    onChange={(e) => {setUsername(e.target.value)}}
-                    placeholder={t("username").toUpperCase()}
-                    sx={{
-                        input: {
-                            color: "white",
-                        },
-                        "& .MuiOutlinedInput-root": {
-                            borderRadius: "5px 45px 45px 5px",
-                            "& fieldset": {
-                                borderWidth: "3px"
-                            },
-                            "&:hover fieldset": {
-                                borderColor: "#A77C64",
-                            },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#82492E",
-                            },
-                            "& input::placeholder": {
-                                color: "lightgray",
-                                opacity: 1
-                            }
-                        },
-                        p: 1,
-                        width: "90%",
-                        textColor: "lightgray"
-                    }}
-                />
-                <TextField
-                    variant="outlined"
-                    onChange={(e) => {setPassword(e.target.value)}}
-                    placeholder={t("password").toUpperCase()}
-                    sx={{
-                        input: {
-                            color: "white",
-                        },
-                        "& .MuiOutlinedInput-root": {
-                            borderRadius: "5px 45px 45px 5px",
-                            "& fieldset": {
-                                borderWidth: "3px"
-                            },
-                            "&:hover fieldset": {
-                                borderColor: "#A77C64",
-                            },
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#82492E",
-                            },
-                            "& input::placeholder": {
-                                color: "lightgray",
-                                opacity: 1
-                            }
-                        },
-                        p: 1,
-                        width: "90%"
-                    }}
-                />
-
-                <Typography variant="body2" color="error" sx={{ p: 1, textAlign: "center" }}>
-                    {errorMessage}
-                </Typography>
-
-                <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                    <Button disabled={isLoading} variant="contained" sx={{ width: "90%", backgroundColor: "#CC9A82" }} onClick={handleRegister}>
-                        {t("register")}
-                    </Button>
-                </Box>
+                
+                <AuthForm isLoading={isLoading} handleAuth={handleRegister} errorMessage={errorMessage} action={AuthActions.REGISTER}/>
             </Box>
         </Box>
     )
