@@ -17,5 +17,8 @@
     "edit": "edit",
     "save": "save",
     "discard": "discard",
-    "userAlreadyExists": "User already exists"
+    "userAlreadyExists": "User already exists",
+    "taskName": "Name",
+    "taskCategory": "Category",
+    "taskPriority": "Priority"
 }

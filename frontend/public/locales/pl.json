@@ -17,5 +17,8 @@
     "edit": "redagować",
     "save": "zastosować",
     "discard": "odrzucić",
-    "userAlreadyExists": "Użytkownik już istnieje."
+    "userAlreadyExists": "Użytkownik już istnieje.",
+    "taskName": "Nazwa",
+    "taskCategory": "Kategoria",
+    "taskPriority": "Znaczenie"
 }
